@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+@layer base {
+  :root {
+    /* Premium Black Aesthetic - Dark First */
+    --background: #050505;
+    --foreground: #F5F5F7;
+    
+    --card: #0A0A0A;
+    --card-foreground: #E0E0E0;
+    
+    --popover: #0A0A0A;
+    --popover-foreground: #E0E0E0;
+    
+    --primary: #3B82F6; /* Modern Blue */
+    --primary-foreground: #FFFFFF;
+    
+    --secondary: #1F1F1F;
+    --secondary-foreground: #E0E0E0;
+    
+    --muted: #1A1A1A;
+    --muted-foreground: #A1A1AA;
+    
+    --accent: #1F1F1F;
+    --accent-foreground: #F5F5F7;
+    
+    --destructive: #EF4444;
+    --destructive-foreground: #FFFFFF;
+    
+    --border: #27272A;
+    --input: #1F1F1F;
+    --ring: #3B82F6;
+    
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Glassmorphism Utilities */
+@layer utilities {
+  .glass {
+    background: rgba(10, 10, 10, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .glass-card {
+    background: linear-gradient(145deg, rgba(30, 30, 30, 0.4) 0%, rgba(15, 15, 15, 0.6) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  }
+  
+  .glass-panel {
+    background: rgba(5, 5, 5, 0.85);
+    backdrop-filter: blur(24px);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}

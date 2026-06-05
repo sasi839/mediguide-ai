@@ -1,0 +1,317 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Role System
+// We use String instead of enum for SQLite
+
+model User {
+  id             String         @id @default(uuid())
+  email          String         @unique
+  passwordHash   String?        // nullable for OAuth users
+  googleId       String?        @unique
+  role           String           @default("MEMBER")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  // Relationships
+  familyGroupId  String?
+  familyGroup    FamilyGroup?   @relation(fields: [familyGroupId], references: [id])
+  familyProfiles FamilyProfile[]
+  auditLogs      AuditLog[]     @relation("ActorLogs")
+  doctorProfile  Doctor?
+  pharmacyProfile Pharmacy?
+  insuranceProfile InsuranceProvider?
+  doctorRatings  DoctorRating[]
+  pharmacyOrders PharmacyOrder[]
+  pharmacyRatings PharmacyRating[]
+  insuranceSubscriptions InsuranceSubscriber[]
+}
+
+model FamilyGroup {
+  id          String   @id @default(uuid())
+  name        String
+  adminId     String
+  inviteCode  String   @unique
+  createdAt   DateTime @default(now())
+
+  members     User[]
+}
+
+model FamilyProfile {
+  id               String          @id @default(uuid())
+  ownerId          String
+  owner            User            @relation(fields: [ownerId], references: [id])
+  name             String
+  age              Int
+  gender           String
+  bloodGroup       String?
+  allergies        String?
+  chronicConditions String?
+  medicalHistory   String?
+  mobileNumber     String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  members          FamilyMember[]
+  prescriptions    Prescription[]
+  medicalRecords   MedicalRecord[]
+  labReports       LabReport[]
+  appointments     Appointment[]
+  emergencyContacts EmergencyContact[]
+}
+
+model FamilyMember {
+  id              String        @id @default(uuid())
+  profileId       String
+  profile         FamilyProfile @relation(fields: [profileId], references: [id])
+  name            String
+  role            String          // Usually GUARDIAN or MEMBER
+  canViewRecords  Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+}
+
+model EmergencyContact {
+  id              String        @id @default(uuid())
+  profileId       String
+  profile         FamilyProfile @relation(fields: [profileId], references: [id])
+  name            String
+  phone           String
+  relation        String
+}
+
+// Medical Records & Vault
+model MedicalRecord {
+  id              String        @id @default(uuid())
+  profileId       String
+  profile         FamilyProfile @relation(fields: [profileId], references: [id])
+  title           String
+  fileUrl         String
+  fileType        String
+  fileSize        Int
+  isPrivate       Boolean       @default(false)
+  uploadedAt      DateTime      @default(now())
+}
+
+model LabReport {
+  id              String        @id @default(uuid())
+  profileId       String
+  profile         FamilyProfile @relation(fields: [profileId], references: [id])
+  title           String
+  fileUrl         String
+  extractedData   String?         // AI extracted values (JSON string)
+  aiSummary       String?
+  uploadedAt      DateTime      @default(now())
+}
+
+// AI & Medications
+model Prescription {
+  id              String        @id @default(uuid())
+  profileId       String
+  profile         FamilyProfile @relation(fields: [profileId], references: [id])
+  fileUrl         String?
+  doctorId        String?
+  doctor          Doctor?       @relation(fields: [doctorId], references: [id])
+  aiSummary       String?
+  issuedAt        DateTime      @default(now())
+  
+  medicines       Medicine[]
+}
+
+model Medicine {
+  id              String        @id @default(uuid())
+  prescriptionId  String
+  prescription    Prescription  @relation(fields: [prescriptionId], references: [id])
+  name            String
+  dosage          String
+  frequency       String
+  timing          String?       // before/after food
+  duration        String?
+  instructions    String?
+  sideEffects     String?
+  createdAt       DateTime      @default(now())
+
+  reminders       MedicineReminder[]
+}
+
+model MedicineReminder {
+  id              String        @id @default(uuid())
+  medicineId      String
+  medicine        Medicine      @relation(fields: [medicineId], references: [id])
+  time            String        // "08:00", "20:00" etc.
+  isActive        Boolean       @default(true)
+  
+  adherenceLogs   AdherenceLog[]
+}
+
+model AdherenceLog {
+  id              String        @id @default(uuid())
+  reminderId      String
+  reminder        MedicineReminder @relation(fields: [reminderId], references: [id])
+  status          String        // TAKEN, MISSED, DELAYED
+  loggedAt        DateTime      @default(now())
+}
+
+// Marketplaces
+model Doctor {
+  id              String        @id @default(uuid())
+  userId          String        @unique
+  user            User          @relation(fields: [userId], references: [id])
+  name            String?
+  age             Int?
+  specialty       String
+  bio             String?
+  qualifications  String?
+  nearestLocation String?
+  isVerified      Boolean       @default(false)
+
+  appointments    Appointment[]
+  prescriptions   Prescription[]
+  availability    DoctorAvailability[]
+  ratings         DoctorRating[]
+}
+
+model DoctorAvailability {
+  id              String        @id @default(uuid())
+  doctorId        String
+  doctor          Doctor        @relation(fields: [doctorId], references: [id])
+  dayOfWeek       Int           // 0-6 for Sunday-Saturday
+  startTime       String        // "09:00"
+  endTime         String        // "17:00"
+}
+
+model DoctorRating {
+  id              String        @id @default(uuid())
+  doctorId        String
+  doctor          Doctor        @relation(fields: [doctorId], references: [id])
+  patientId       String
+  patient         User          @relation(fields: [patientId], references: [id])
+  rating          Int           // 1 to 5
+  review          String?
+  createdAt       DateTime      @default(now())
+}
+
+model Appointment {
+  id              String        @id @default(uuid())
+  doctorId        String
+  doctor          Doctor        @relation(fields: [doctorId], references: [id])
+  profileId       String
+  profile         FamilyProfile @relation(fields: [profileId], references: [id])
+  scheduledAt     DateTime
+  status          String        // PENDING, CONFIRMED, COMPLETED, CANCELLED
+  notes           String?
+  createdAt       DateTime      @default(now())
+}
+
+model Pharmacy {
+  id              String        @id @default(uuid())
+  userId          String        @unique
+  user            User          @relation(fields: [userId], references: [id])
+  name            String
+  address         String
+  lat             Float?
+  lng             Float?
+  bio             String?       // ADDED FOR PHARMACY PORTAL
+  isVerified      Boolean       @default(false)
+  
+  stocks          PharmacyStock[]
+  orders          PharmacyOrder[]
+  ratings         PharmacyRating[]
+}
+
+model PharmacyOrder {
+  id              String        @id @default(uuid())
+  pharmacyId      String
+  pharmacy        Pharmacy      @relation(fields: [pharmacyId], references: [id])
+  patientId       String
+  patient         User          @relation(fields: [patientId], references: [id])
+  medicineName    String
+  quantity        Int
+  totalPrice      Float
+  deliveryAddress String
+  status          String        // PENDING, COMPLETED, CANCELLED
+  createdAt       DateTime      @default(now())
+}
+
+model PharmacyRating {
+  id              String        @id @default(uuid())
+  pharmacyId      String
+  pharmacy        Pharmacy      @relation(fields: [pharmacyId], references: [id])
+  patientId       String
+  patient         User          @relation(fields: [patientId], references: [id])
+  rating          Int           // 1 to 5
+  review          String?
+  createdAt       DateTime      @default(now())
+}
+
+model PharmacyStock {
+  id              String        @id @default(uuid())
+  pharmacyId      String
+  pharmacy        Pharmacy      @relation(fields: [pharmacyId], references: [id])
+  medicineName    String
+  quantity        Int
+  price           Float
+  lastUpdated     DateTime      @default(now())
+}
+
+model InsuranceProvider {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id])
+  companyName     String
+  adminName       String?
+  adminAge        Int?
+  bio             String?
+  supportContact  String?
+  isVerified      Boolean  @default(false)
+  
+  plans           InsurancePlan[]
+  policies        InsurancePolicy[]
+}
+
+model InsurancePlan {
+  id              String   @id @default(uuid())
+  providerId      String
+  provider        InsuranceProvider @relation(fields: [providerId], references: [id])
+  name            String
+  price           Float
+  description     String?
+  status          String   @default("ACTIVE")
+  createdAt       DateTime @default(now())
+
+  subscribers     InsuranceSubscriber[]
+}
+
+model InsuranceSubscriber {
+  id              String   @id @default(uuid())
+  planId          String
+  plan            InsurancePlan @relation(fields: [planId], references: [id])
+  patientId       String
+  patient         User     @relation(fields: [patientId], references: [id])
+  status          String   @default("ACTIVE")
+  createdAt       DateTime @default(now())
+}
+
+model InsurancePolicy {
+  id              String        @id @default(uuid())
+  providerId      String
+  provider        InsuranceProvider @relation(fields: [providerId], references: [id])
+  name            String
+  details         String?
+  price           Float
+}
+
+// Security & Audit
+model AuditLog {
+  id              String        @id @default(uuid())
+  actorId         String
+  actor           User          @relation("ActorLogs", fields: [actorId], references: [id])
+  action          String
+  target          String
+  timestamp       DateTime      @default(now())
+}
