@@ -11,7 +11,7 @@ export default function DoctorMarketplace() {
   const { data, isLoading } = useQuery({
     queryKey: ['doctors'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/marketplace/doctors', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/marketplace/doctors`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();

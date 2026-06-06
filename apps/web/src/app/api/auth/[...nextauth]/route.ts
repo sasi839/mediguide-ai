@@ -14,7 +14,7 @@ export const authOptions: AuthOptions = {
 
         try {
           // Calling our Express backend login route
-          const res = await fetch("http://localhost:4000/api/auth/signin", {
+          const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/auth/signin`, {
             method: "POST",
             body: JSON.stringify({
               email: credentials.email,

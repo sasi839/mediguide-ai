@@ -16,7 +16,7 @@ export default function DoctorDashboard() {
   const { data: profileData, refetch: refetchProfile } = useQuery({
     queryKey: ['doctorProfile'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/doctor/profile', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/doctor/profile`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -42,7 +42,7 @@ export default function DoctorDashboard() {
     e.preventDefault();
     setIsSavingProfile(true);
     try {
-      const res = await fetch('http://localhost:4000/api/doctor/profile', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/doctor/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ export default function DoctorDashboard() {
   const { data: availabilityData, isLoading: isLoadingAvailability, refetch: refetchAvailability } = useQuery({
     queryKey: ['doctorAvailability'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/doctor/availability', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/doctor/availability`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -76,7 +76,7 @@ export default function DoctorDashboard() {
   const { data: appointmentsData, isLoading: isLoadingAppointments, refetch: refetchAppointments } = useQuery({
     queryKey: ['doctorAppointments'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/doctor/appointments', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/doctor/appointments`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -114,7 +114,7 @@ export default function DoctorDashboard() {
 
   const saveAvailability = async () => {
     setIsSaving(true);
-    await fetch('http://localhost:4000/api/doctor/availability', {
+    await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/doctor/availability`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -132,7 +132,7 @@ export default function DoctorDashboard() {
       const endpoint = action === 'accept' ? 'accept' : 'status';
       const body = action === 'accept' ? undefined : JSON.stringify({ status: 'REJECTED' });
 
-      const res = await fetch(`http://localhost:4000/api/doctor/appointments/${id}/${endpoint}`, {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/doctor/appointments/${id}/${endpoint}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

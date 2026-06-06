@@ -24,7 +24,7 @@ export default function Prescriptions() {
   const { data: appointmentsData } = useQuery({
     queryKey: ['doctorAppointments'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/doctor/appointments', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/doctor/appointments`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -47,8 +47,8 @@ export default function Prescriptions() {
     queryKey: ['prescriptionsList', selectedProfileId],
     queryFn: async () => {
       const url = isDoctor && selectedProfileId 
-        ? `http://localhost:4000/api/ai/prescriptions?profileId=${selectedProfileId}`
-        : 'http://localhost:4000/api/ai/prescriptions';
+        ? `\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/ai/prescriptions?profileId=${selectedProfileId}`
+        : `\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/ai/prescriptions`;
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
@@ -69,7 +69,7 @@ export default function Prescriptions() {
     }
 
     try {
-      const res = await fetch('http://localhost:4000/api/ai/upload-prescription', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/ai/upload-prescription`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` },
         body: formData
@@ -280,7 +280,7 @@ export default function Prescriptions() {
               >
                 <div className="w-32 h-32 shrink-0 bg-black/40 rounded-xl overflow-hidden border border-border flex items-center justify-center">
                   {p.fileUrl ? (
-                    <img src={`http://localhost:4000${p.fileUrl}`} alt="Prescription Scan" className="w-full h-full object-cover" />
+                    <img src={`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}${p.fileUrl}`} alt="Prescription Scan" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-xs text-gray-500">No Image</span>
                   )}

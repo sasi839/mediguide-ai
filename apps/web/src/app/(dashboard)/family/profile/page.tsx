@@ -12,7 +12,7 @@ export default function PatientProfile() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['familyProfiles'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/family', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/family`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -43,7 +43,7 @@ export default function PatientProfile() {
     
     setIsSubmitting(true);
     try {
-      const res = await fetch(`http://localhost:4000/api/family/${primaryProfile.id}`, {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/family/${primaryProfile.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

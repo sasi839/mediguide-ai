@@ -14,7 +14,7 @@ export default function AppointmentsDashboard() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['doctorList'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/doctor/list', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/doctor/list`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -25,7 +25,7 @@ export default function AppointmentsDashboard() {
   const { data: myAppointmentsData } = useQuery({
     queryKey: ['myAppointments'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/doctor/my-appointments', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/doctor/my-appointments`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -36,7 +36,7 @@ export default function AppointmentsDashboard() {
   const { data: familyData } = useQuery({
     queryKey: ['familyProfiles'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/family', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/family`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -79,7 +79,7 @@ export default function AppointmentsDashboard() {
     // Combine date and time
     const scheduledAt = new Date(`${bookingData.date}T${bookingData.time}`);
 
-    await fetch('http://localhost:4000/api/doctor/book', {
+    await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/doctor/book`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ export default function AppointmentsDashboard() {
   const handleRate = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await fetch('http://localhost:4000/api/doctor/rate', {
+    await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/doctor/rate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

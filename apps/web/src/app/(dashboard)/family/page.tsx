@@ -18,7 +18,7 @@ export default function FamilyDashboard() {
   const { data: groupData, refetch: refetchGroup } = useQuery({
     queryKey: ['familyGroup'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/family/group', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/family/group`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -29,7 +29,7 @@ export default function FamilyDashboard() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['familyProfiles'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/family', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/family`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -43,7 +43,7 @@ export default function FamilyDashboard() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch('http://localhost:4000/api/family', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/family`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export default function FamilyDashboard() {
     if (!groupName) return;
     setIsSubmitting(true);
     try {
-      const res = await fetch('http://localhost:4000/api/family/group/create', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/family/group/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${(session as any)?.accessToken}` },
         body: JSON.stringify({ name: groupName })
@@ -92,7 +92,7 @@ export default function FamilyDashboard() {
     if (!joinCode) return;
     setIsSubmitting(true);
     try {
-      const res = await fetch('http://localhost:4000/api/family/group/join', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/family/group/join`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${(session as any)?.accessToken}` },
         body: JSON.stringify({ inviteCode: joinCode })

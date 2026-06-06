@@ -21,7 +21,7 @@ export default function SignUp() {
     
     // We pass 'signup' as a flag to NextAuth Credentials provider or directly call the backend first
     try {
-      const res = await fetch('http://localhost:4000/api/auth/signup', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password, role })

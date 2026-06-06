@@ -13,7 +13,7 @@ export default function AdminDashboard() {
   const { data, isLoading } = useQuery({
     queryKey: ['adminUsers'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/admin/users', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/users`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -24,7 +24,7 @@ export default function AdminDashboard() {
   // Verify User Mutation
   const verifyMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: string, role: string }) => {
-      await fetch('http://localhost:4000/api/admin/verify', {
+      await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/admin/verify`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

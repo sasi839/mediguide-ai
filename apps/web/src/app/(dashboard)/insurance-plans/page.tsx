@@ -12,7 +12,7 @@ export default function InsuranceMarketplace() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['insuranceMarketplace'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/insurance/list', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/insurance/list`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -26,7 +26,7 @@ export default function InsuranceMarketplace() {
   const handleSubscribe = async (planId: string) => {
     setSubscribingTo(planId);
     try {
-      const res = await fetch('http://localhost:4000/api/insurance/subscribe', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/insurance/subscribe`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

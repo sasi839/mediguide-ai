@@ -12,7 +12,7 @@ export default function InsuranceDashboard() {
   const { data: statsData, isLoading: isLoadingStats } = useQuery({
     queryKey: ['insuranceStats'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/insurance/stats', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/insurance/stats`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -23,7 +23,7 @@ export default function InsuranceDashboard() {
   const { data: plansData, refetch: refetchPlans } = useQuery({
     queryKey: ['insurancePlans'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/insurance/plans', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/insurance/plans`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -34,7 +34,7 @@ export default function InsuranceDashboard() {
   const { data: profileData, refetch: refetchProfile } = useQuery({
     queryKey: ['insuranceProfile'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/insurance/profile', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/insurance/profile`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -61,7 +61,7 @@ export default function InsuranceDashboard() {
     e.preventDefault();
     setIsSavingProfile(true);
     try {
-      const res = await fetch('http://localhost:4000/api/insurance/profile', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/insurance/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export default function InsuranceDashboard() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch('http://localhost:4000/api/insurance/plans', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/insurance/plans`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

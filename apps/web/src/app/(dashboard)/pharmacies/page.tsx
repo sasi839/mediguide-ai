@@ -12,7 +12,7 @@ export default function PharmaciesDashboard() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['pharmacyList'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/pharmacy/list', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/pharmacy/list`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -23,7 +23,7 @@ export default function PharmaciesDashboard() {
   const { data: myOrdersData } = useQuery({
     queryKey: ['myPharmacyOrders'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/pharmacy/my-orders', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/pharmacy/my-orders`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -53,7 +53,7 @@ export default function PharmaciesDashboard() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    const res = await fetch('http://localhost:4000/api/pharmacy/order', {
+    const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/pharmacy/order`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

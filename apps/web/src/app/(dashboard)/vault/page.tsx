@@ -14,7 +14,7 @@ export default function VaultDashboard() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['medicalRecords'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/records/list', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/records/list`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -35,7 +35,7 @@ export default function VaultDashboard() {
     formData.append('isPrivate', 'false');
 
     try {
-      const res = await fetch('http://localhost:4000/api/records/upload', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/records/upload`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` },
         body: formData
@@ -143,7 +143,7 @@ export default function VaultDashboard() {
                   )}
                 </td>
                 <td className="px-6 py-4">
-                  <a href={`http://localhost:4000${record.fileUrl}`} target="_blank" rel="noreferrer" className="text-primary hover:underline flex items-center gap-1 text-sm font-medium">
+                  <a href={`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}${record.fileUrl}`} target="_blank" rel="noreferrer" className="text-primary hover:underline flex items-center gap-1 text-sm font-medium">
                     <Download className="w-4 h-4" /> View
                   </a>
                 </td>

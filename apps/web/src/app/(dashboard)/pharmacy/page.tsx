@@ -12,7 +12,7 @@ export default function PharmacyDashboard() {
   const { data: stockData, isLoading, refetch } = useQuery({
     queryKey: ['pharmacyStock'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/pharmacy/stock', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/pharmacy/stock`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -23,7 +23,7 @@ export default function PharmacyDashboard() {
   const { data: ordersData, isLoading: isLoadingOrders, refetch: refetchOrders } = useQuery({
     queryKey: ['pharmacyOrders'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/pharmacy/orders', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/pharmacy/orders`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -34,7 +34,7 @@ export default function PharmacyDashboard() {
   const { data: profileFetchData } = useQuery({
     queryKey: ['pharmacyProfile'],
     queryFn: async () => {
-      const res = await fetch('http://localhost:4000/api/pharmacy/profile', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/pharmacy/profile`, {
         headers: { Authorization: `Bearer ${(session as any)?.accessToken}` }
       });
       return res.json();
@@ -51,7 +51,7 @@ export default function PharmacyDashboard() {
   const handleUpdateStatus = async (orderId: string, status: string) => {
     setIsUpdatingStatus(orderId);
     try {
-      await fetch(`http://localhost:4000/api/pharmacy/order-status/${orderId}`, {
+      await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/pharmacy/order-status/${orderId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ export default function PharmacyDashboard() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch('http://localhost:4000/api/pharmacy/profile', {
+      const res = await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/pharmacy/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ export default function PharmacyDashboard() {
   const handleSaveStock = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await fetch('http://localhost:4000/api/pharmacy/stock', {
+    await fetch(`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/pharmacy/stock`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
