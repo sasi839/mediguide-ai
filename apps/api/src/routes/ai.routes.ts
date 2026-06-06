@@ -6,15 +6,7 @@ import path from 'path';
 
 const router = Router();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../uploads'));
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'rx-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Wave 2: Prescription Scanner (OCR + LLM Mock Pipeline)
@@ -33,7 +25,9 @@ router.post('/upload-prescription', authenticate, upload.single('prescription'),
       targetProfileId = profile.id;
     }
 
-    const fileUrl = `/uploads/${req.file.filename}`;
+    // Convert file buffer to Base64 string for Vercel compatibility
+    const base64File = req.file.buffer.toString('base64');
+    const fileUrl = `data:${req.file.mimetype};base64,${base64File}`;
     
     // 1. Google Vision API Fallback Mock (Extract Text from Image)
     const extractedText = `

@@ -7,15 +7,7 @@ import path from 'path';
 const router = Router();
 
 // Configure Multer storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../uploads'));
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Get all records for user's accessible profiles
@@ -66,11 +58,15 @@ router.post('/upload', authenticate, upload.single('document'), async (req: any,
       return res.status(400).json({ error: "No family profile found to attach document" });
     }
 
+    // Convert file buffer to Base64 string for Vercel compatibility
+    const base64File = req.file.buffer.toString('base64');
+    const fileUrl = `data:${req.file.mimetype};base64,${base64File}`;
+
     const record = await prisma.medicalRecord.create({
       data: {
         profileId: profile.id,
         title: title || req.file.originalname,
-        fileUrl: `/uploads/${req.file.filename}`,
+        fileUrl: fileUrl,
         fileType: req.file.mimetype,
         fileSize: req.file.size,
         isPrivate: isPrivate === 'true',

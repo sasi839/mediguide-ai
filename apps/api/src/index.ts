@@ -30,8 +30,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Serve static uploads
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Removed static uploads for Vercel compatibility
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -52,8 +51,11 @@ app.get('/health', (req, res) => {
 // Global Error Handler
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`🚀 MediGuide API running on http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 MediGuide API running on http://localhost:${PORT}`);
+  });
+}
 
+// Export for Vercel Serverless
 export default app;

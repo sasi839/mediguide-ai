@@ -143,7 +143,7 @@ export default function VaultDashboard() {
                   )}
                 </td>
                 <td className="px-6 py-4">
-                  <a href={`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}${record.fileUrl}`} target="_blank" rel="noreferrer" className="text-primary hover:underline flex items-center gap-1 text-sm font-medium">
+                  <a href={record.fileUrl?.startsWith('data:') ? record.fileUrl : `\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}\${record.fileUrl}`} download={record.title} target="_blank" rel="noreferrer" className="text-primary hover:underline flex items-center gap-1 text-sm font-medium">
                     <Download className="w-4 h-4" /> View
                   </a>
                 </td>

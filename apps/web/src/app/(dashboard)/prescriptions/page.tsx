@@ -280,7 +280,7 @@ export default function Prescriptions() {
               >
                 <div className="w-32 h-32 shrink-0 bg-black/40 rounded-xl overflow-hidden border border-border flex items-center justify-center">
                   {p.fileUrl ? (
-                    <img src={`\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}${p.fileUrl}`} alt="Prescription Scan" className="w-full h-full object-cover" />
+                    <img src={p.fileUrl?.startsWith('data:') ? p.fileUrl : `\${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}\${p.fileUrl}`} alt="Prescription Scan" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-xs text-gray-500">No Image</span>
                   )}
